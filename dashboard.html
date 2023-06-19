@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f2f2f2;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        background-color: #fff;
+        border-radius: 4px;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        animation: slide-in 0.3s ease-out;
+      }
+
+      @keyframes slide-in {
+        from {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      a {
+        text-decoration: none;
+        color: #333;
+      }
+
+      a:hover {
+        color: #007bff;
+      }
+
+      .file-actions {
+        display: flex;
+        align-items: center;
+      }
+
+      .file-name {
+        flex-grow: 1;
+      }
+
+      form {
+        margin-bottom: 20px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        animation: fade-in 0.5s ease-out;
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+      }
+
+      input[type="file"],
+      input[type="text"] {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 300px;
+        max-width: 100%;
+        font-size: 14px;
+        color: #333;
+      }
+
+      input[type="submit"] {
+        padding: 10px 15px;
+        background-color: #007bff;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #0069d9;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        margin: 0;
+        padding: 0;
+        font-size: 28px;
+        color: #333;
+      }
+
+      .section-title {
+        margin-top: 30px;
+        margin-bottom: 10px;
+        font-size: 20px;
+        color: #333;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: #007bff;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 14px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+      }
+
+      .button:hover {
+        background-color: #0069d9;
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+      }
+
+      .input-group input[type="text"] {
+        width: 100%;
+      }
+
+      .input-group input[type="file"] {
+        display: none;
+      }
+
+      .input-group .file-input-label {
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: #007bff;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+      }
+
+      .input-group .file-input-label:hover {
+        background-color: #0069d9;
+      }
+
+      .input-group .file-name {
+        display: inline-block;
+        margin-left: 10px;
+        color: #333;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>File Manager</h1>
+      </header>
+
+      <section>
+        <h2 class="section-title">Files</h2>
+        <ul class="file-list">
+          {{range .Files}}
+          <li class="file-item animate__animated animate__fadeInUp">
+            <div class="file-actions">
+              <a class="button button-download" href="/download?filename={{.}}"
+                >Download</a
+              >
+              <a class="button button-delete" href="/delete?filename={{.}}"
+                >Delete</a
+              >
+            </div>
+            <div class="file-name">{{.}}</div>
+          </li>
+          {{end}}
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="section-title">Upload File</h2>
+        <form
+          class="form"
+          action="/upload"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <div class="input-group">
+            <label for="file">Choose a file:</label>
+            <input type="file" id="file" name="file" required="true" />
+            <label class="file-input-label button" for="file">Browse</label>
+            <span class="file-name">No file chosen</span>
+          </div>
+          <input class="button button-upload" type="submit" value="Upload" />
+        </form>
+      </section>
+
+      <section>
+        <h2 class="section-title">Create Directory</h2>
+        <form class="form" action="/mkdir" method="get">
+          <div class="input-group">
+            <label for="dir">Enter a directory name:</label>
+            <input type="text" id="dir" name="dir" required="true" />
+          </div>
+          <input class="button button-create" type="submit" value="Create" />
+        </form>
+      </section>
+    </div>
+
+    <script>
+      const fileInput = document.getElementById("file");
+      const fileInputLabel = document.querySelector(".file-input-label");
+      const fileNameLabel = document.querySelector(".file-name");
+
+      fileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          fileNameLabel.textContent = file.name;
+        } else {
+          fileNameLabel.textContent = "No file chosen";
+        }
+      });
+
+      fileInputLabel.addEventListener("click", () => {
+        fileInput.click();
+      });
+    </script>
+  </body>
+</html>
